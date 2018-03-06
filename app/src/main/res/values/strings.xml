@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Freebies</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="Events">Events</string>
+    <string name="account">Account</string>
+    <string name="Map">Map</string>
+    <string name="Account">Account</string>
+</resources>
