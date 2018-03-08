@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.justin.freebies">
-
+    <uses-permission android:name="android.permission.INTERNET"/>
+    
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -20,7 +21,8 @@
         </activity>
         <activity android:name=".EventsPage" />
         <activity android:name=".MapPage" />
-        <activity android:name=".AccountPage"></activity>
+        <activity android:name=".AccountPage" />
+        <activity android:name=".StartUpLogin"></activity>
     </application>
 
 </manifest>

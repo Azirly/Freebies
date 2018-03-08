@@ -59,6 +59,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "320941293565-nrs3rllupcfpo8qj5nh5khd706rs8es9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.justin.freebies",
+            "certificate_hash": "7aad1714cdd9c805a18b01215c97160d0f3a03d1"
+          }
+        },
+        {
           "client_id": "320941293565-ve95ufgj4m8lujbrg01svof9ei1gr71s.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
