@@ -21,10 +21,10 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class StartUpLogin extends AppCompatActivity implements View.OnClickListener{
 
-    private Button buttonRegister;
+    private Button buttonLogIn;
     private EditText editTextEmail;
     private EditText editTextPassword;
-    private TextView textViewSignin;
+    private TextView textViewSignUp;
 
     private ProgressDialog progressDialog;
 
@@ -35,25 +35,27 @@ public class StartUpLogin extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_up_login);
 
-        progressDialog = new ProgressDialog(this);
-
         firebaseAuth = FirebaseAuth.getInstance();
 
-        buttonRegister = (Button) findViewById(R.id.buttonRegister);
+//        if(firebaseAuth.getCurrentUser() != null) {
+//            finish();
+//            startActivity(new Intent(this, MainPage.class));
+//        }
+
+        progressDialog = new ProgressDialog(this);
 
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
+        buttonLogIn = (Button) findViewById(R.id.buttonLogIn);
+        textViewSignUp = (TextView) findViewById(R.id.textViewSignUp);
 
-        textViewSignin = (TextView) findViewById(R.id.textViewSignin);
-
-        buttonRegister.setOnClickListener(this);
-        textViewSignin.setOnClickListener(this);
+        buttonLogIn.setOnClickListener(this);
+        textViewSignUp.setOnClickListener(this);
     }
 
-    private void registerUser() {
+    private void userLogin() {
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
-
         if(TextUtils.isEmpty(email))    {
             Toast.makeText(this, "Please enter your email", Toast.LENGTH_SHORT).show();
             return;
@@ -64,32 +66,34 @@ public class StartUpLogin extends AppCompatActivity implements View.OnClickListe
             return;
         }
 
-        progressDialog.setMessage("Registering...");
+        progressDialog.setMessage("Loading...");
         progressDialog.show();
 
-        firebaseAuth.createUserWithEmailAndPassword(email, password)
+        firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         progressDialog.dismiss();
-                        if (task.isSuccessful()) {
-                            Toast.makeText(StartUpLogin.this, "Registered Successfully", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(StartUpLogin.this, "Failed to register. Please try again", Toast.LENGTH_SHORT).show();
+                        if(task.isSuccessful()) {
+                            finish();
+                            startActivity(new Intent(getApplicationContext(), MainPage.class));
+                        }
+                        else {
+                            Toast.makeText(StartUpLogin.this, "Failed to log in. Please try again", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
     }
 
     @Override
-    public void onClick(View view)  {
-        if(view == buttonRegister) {
-            registerUser();
+    public void onClick(View view) {
+
+        if(view == buttonLogIn) {
+            userLogin();
         }
-        if(view == textViewSignin)  {
-            finish();
-            Intent i = new Intent(this, Login.class);
-            startActivity(i);
+
+        if(view == textViewSignUp) {
+            startActivity(new Intent(this, Register.class));
         }
     }
 }
