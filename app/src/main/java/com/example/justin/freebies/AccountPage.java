@@ -7,8 +7,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
-public class AccountPage extends AppCompatActivity {
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import org.w3c.dom.Text;
+
+public class AccountPage extends AppCompatActivity implements View.OnClickListener{
+
+    private Button buttonSignOut;
+    private TextView userEmail;
+
+    private FirebaseAuth firebaseAuth;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -54,5 +67,35 @@ public class AccountPage extends AppCompatActivity {
         Menu menu = navigation.getMenu();
         MenuItem menuItem = menu.getItem(3);
         menuItem.setChecked(true);
+
+        buttonSignOut = (Button) findViewById(R.id.buttonSignOut);
+        userEmail = (TextView) findViewById(R.id.userEmail);
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        if(firebaseAuth.getCurrentUser() == null)
+        {
+            finish();
+            startActivity(new Intent(this, StartUpLogin.class));
+        }
+
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+
+        userEmail.setText("Welcome "+user.getEmail());
+
+        if(firebaseAuth.getCurrentUser() == null) {
+            finish();
+            startActivity(new Intent(this, StartUpLogin.class));
+        }
+
+        buttonSignOut.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        if(view == buttonSignOut) {
+            firebaseAuth.signOut();
+            finish();
+            startActivity(new Intent(this, StartUpLogin.class));
+        }
     }
 }
