@@ -34,7 +34,7 @@ public class PostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
 
-        store = FirebaseStorage.getInstance().getReference()
+        store = FirebaseStorage.getInstance().getReference();
 
         selectImage = (ImageButton) findViewById(R.id.imageSelect);
 
