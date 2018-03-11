@@ -1,5 +1,6 @@
 package com.example.justin.freebies;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.media.Image;
 import android.net.Uri;
@@ -12,8 +13,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 public class PostActivity extends AppCompatActivity {
 
@@ -29,6 +32,8 @@ public class PostActivity extends AppCompatActivity {
 
     private StorageReference store;
 
+    private ProgressDialog progress;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +47,8 @@ public class PostActivity extends AppCompatActivity {
         mDescriptionBox = (EditText) findViewById(R.id.DescriptionBox);
 
         mSubmitPostButton = (Button) findViewById(R.id.SubmitPostButton);
+
+        progress = new ProgressDialog(this);
 
         selectImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,11 +68,24 @@ public class PostActivity extends AppCompatActivity {
     }
 
     private void startPosting() {
-        String title_val = mSubmitPostButton.getText().toString().trim();
+
+        progress.setMessage("Posting to Blog ...");
+        progress.show();
+
+        String title_val = mTitleBox.getText().toString().trim();
         String desc_val = mDescriptionBox.getText().toString().trim();
 
         if(!TextUtils.isEmpty(title_val) && !TextUtils.isEmpty(desc_val) && mImageUri != null){
 
+            StorageReference filepath = store.child("Blog_Images").child(mImageUri.getLastPathSegment());
+
+            filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    progress.dismiss();
+                }
+            });
         }
 
     }
