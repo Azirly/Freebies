@@ -14,6 +14,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -31,6 +34,7 @@ public class PostActivity extends AppCompatActivity {
     private static final int Gallery_Req = 1;
 
     private StorageReference store;
+    private DatabaseReference database;
 
     private ProgressDialog progress;
 
@@ -40,6 +44,7 @@ public class PostActivity extends AppCompatActivity {
         setContentView(R.layout.activity_post);
 
         store = FirebaseStorage.getInstance().getReference();
+        database = FirebaseDatabase.getInstance().getReference().child("Blog");
 
         selectImage = (ImageButton) findViewById(R.id.imageSelect);
 
@@ -72,8 +77,8 @@ public class PostActivity extends AppCompatActivity {
         progress.setMessage("Posting to Blog ...");
         progress.show();
 
-        String title_val = mTitleBox.getText().toString().trim();
-        String desc_val = mDescriptionBox.getText().toString().trim();
+        final String title_val = mTitleBox.getText().toString().trim();
+        final String desc_val = mDescriptionBox.getText().toString().trim();
 
         if(!TextUtils.isEmpty(title_val) && !TextUtils.isEmpty(desc_val) && mImageUri != null){
 
@@ -83,6 +88,16 @@ public class PostActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     Uri downloadUrl = taskSnapshot.getDownloadUrl();
+
+                    DatabaseReference newPost = database.push(); //unique ids for posts
+
+                    newPost.child("Title").setValue(title_val);
+                    newPost.child("Description").setValue(desc_val);
+                    newPost.child("Image").setValue(downloadUrl.toString());
+                    //newPost.child("uid").setValue(FirebaseAuth.getInstance()); trying to get user id
+
+                    startActivity(new Intent(PostActivity.this, EventsBlogPage.class));
+
                     progress.dismiss();
                 }
             });
