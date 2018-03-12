@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.media.Image;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -21,9 +23,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.Calendar;
+import java.util.Date;
+
 public class PostActivity extends AppCompatActivity {
 
-    private ImageButton selectImage;
+    private ImageButton takeImage;
     private EditText mTitleBox;
     private EditText mDescriptionBox;
 
@@ -32,11 +37,18 @@ public class PostActivity extends AppCompatActivity {
     private Uri mImageUri = null;
 
     private static final int Gallery_Req = 1;
+    static final int REQUEST_IMAGE_CAPTURE = 1;
 
     private StorageReference store;
     private DatabaseReference database;
 
     private ProgressDialog progress;
+
+    private GPSTracker gps;
+    private double currentLat;
+    private double currentLong;
+    private Date currentTime;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +58,7 @@ public class PostActivity extends AppCompatActivity {
         store = FirebaseStorage.getInstance().getReference();
         database = FirebaseDatabase.getInstance().getReference().child("Blog");
 
-        selectImage = (ImageButton) findViewById(R.id.imageSelect);
+        takeImage = (ImageButton) findViewById(R.id.imageSelect);
 
         mTitleBox = (EditText) findViewById(R.id.TitleBox);
         mDescriptionBox = (EditText) findViewById(R.id.DescriptionBox);
@@ -55,12 +67,20 @@ public class PostActivity extends AppCompatActivity {
 
         progress = new ProgressDialog(this);
 
-        selectImage.setOnClickListener(new View.OnClickListener() {
+        gps = new GPSTracker(this);
+
+        takeImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent gallery = new Intent(Intent.ACTION_GET_CONTENT);
-                gallery.setType("image/*");
-                startActivityForResult(gallery, Gallery_Req);
+                if(gps.canGetLocation()) {
+                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    currentLat = gps.getLatitude();
+                    currentLong = gps.getLongitude();
+                    currentTime = Calendar.getInstance().getTime();
+                    if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                    }
+                }
             }
         });
 
@@ -92,6 +112,8 @@ public class PostActivity extends AppCompatActivity {
                     DatabaseReference newPost = database.push(); //unique ids for posts
 
                     newPost.child("Title").setValue(title_val);
+                    newPost.child("Location").setValue(currentLat, currentLong);
+                    newPost.child("Time").setValue(currentTime);
                     newPost.child("Description").setValue(desc_val);
                     newPost.child("Image").setValue(downloadUrl.toString());
                     //newPost.child("uid").setValue(FirebaseAuth.getInstance()); trying to get user id
@@ -111,7 +133,7 @@ public class PostActivity extends AppCompatActivity {
 
         if (requestCode == Gallery_Req && resultCode == RESULT_OK){
             mImageUri = data.getData();
-            selectImage.setImageURI(mImageUri);
+            takeImage.setImageURI(mImageUri);
         }
 
     }

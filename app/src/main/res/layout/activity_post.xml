@@ -55,7 +55,7 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <ImageButton
-        android:id="@+id/imageSelect"
+        android:id="@+id/takeImage"
         android:layout_width="239dp"
         android:layout_height="239dp"
         android:layout_marginBottom="8dp"
