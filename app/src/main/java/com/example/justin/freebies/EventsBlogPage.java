@@ -5,10 +5,26 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 public class EventsBlogPage extends AppCompatActivity {
+
+    private RecyclerView blogList;
+
+    private DatabaseReference mData;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -58,6 +74,67 @@ public class EventsBlogPage extends AppCompatActivity {
         Menu menu = navigation.getMenu();
         MenuItem menuItem = menu.getItem(1);
         menuItem.setChecked(true);
+
+        blogList = (RecyclerView) findViewById(R.id.blog_list);
+        blogList.setHasFixedSize(true);
+        blogList.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        mData = FirebaseDatabase.getInstance().getReference().child("Blog");
+
+        Query mDataQuery = mData.orderByValue();
+
+        FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<Blog>().setQuery(mDataQuery, Blog.class).build();
+
+        /*      Blog.class,
+                R.layout.blog_row,
+                BlogViewHolder.class,
+                mData*/
+
+        FirebaseRecyclerAdapter<Blog, BlogViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Blog, BlogViewHolder>(options) {
+            @Override
+            protected void onBindViewHolder(@NonNull BlogViewHolder holder, int position, @NonNull Blog model) {
+                holder.setTitle(model.getTitle());
+                holder.setDesc(model.getDesk());
+            }
+
+            @NonNull
+            @Override
+            public BlogViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.blog_row, parent,false);
+                return new BlogViewHolder(view);
+            }
+        };
+
+        blogList.setAdapter(firebaseRecyclerAdapter);
+
+    }
+
+
+
+    public static class BlogViewHolder extends RecyclerView.ViewHolder{
+
+        View mView;
+
+        public BlogViewHolder(View itemView) {
+            super(itemView);
+            mView = itemView;
+        }
+
+        public void setTitle(String title){
+            TextView postTitle = (TextView) mView.findViewById(R.id.post_title);
+            postTitle.setText(title);
+        }
+
+        public void setDesc(String desc){
+            TextView postDesc = (TextView) mView.findViewById(R.id.post_text);
+            postDesc.setText(desc);
+        }
+
     }
 
     @Override
