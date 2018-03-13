@@ -83,7 +83,8 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback{
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Toast.makeText(this, "Map is Ready", Toast.LENGTH_SHORT).show();
+        googleMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+        /*Toast.makeText(this, "Map is Ready", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "onMapReady: map is ready");
         mMap = googleMap;
 
@@ -97,7 +98,7 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback{
             }
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
-        }
+        }*/
     }
 
     @Override
@@ -105,7 +106,10 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_page);
 
-        getLocationPermission();
+        SupportMapFragment mapFragment =
+                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+        //getLocationPermission();
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
