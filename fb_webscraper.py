@@ -21,7 +21,7 @@ config = {
   "authDomain": "free-bees-b7d1a.firebaseapp.com",
   "databaseURL": "https://free-bees-b7d1a.firebaseio.com",
   "storageBucket": "free-bees-b7d1a.appspot.com",
-  "serviceAccount": "../CS 125/free-bees-b7d1a-firebase-adminsdk-bhgrr-b8cc0f8df8.json"
+  "serviceAccount": "../Freebies/free-bees-b7d1a-firebase-adminsdk-bhgrr-b8cc0f8df8.json"
 }
 
 firebase = pyrebase.initialize_app(config)
