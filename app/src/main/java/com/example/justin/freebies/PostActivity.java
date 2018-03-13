@@ -58,7 +58,7 @@ public class PostActivity extends AppCompatActivity {
         store = FirebaseStorage.getInstance().getReference();
         database = FirebaseDatabase.getInstance().getReference().child("Blog");
 
-        takeImage = (ImageButton) findViewById(R.id.imageSelect);
+        takeImage = (ImageButton) findViewById(R.id.takeImage);
 
         mTitleBox = (EditText) findViewById(R.id.TitleBox);
         mDescriptionBox = (EditText) findViewById(R.id.DescriptionBox);
