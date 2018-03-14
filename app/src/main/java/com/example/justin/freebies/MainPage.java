@@ -24,6 +24,8 @@ import java.util.Map;
 
 public class MainPage extends AppCompatActivity {
     // Write a message to the database
+
+    //Juston's Edits
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference()
                                     .child("users");
@@ -48,6 +50,9 @@ public class MainPage extends AppCompatActivity {
             }
         });
     }
+
+    //End of Juston's Edits
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
