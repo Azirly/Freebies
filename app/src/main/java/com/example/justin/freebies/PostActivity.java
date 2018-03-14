@@ -55,6 +55,7 @@ public class PostActivity extends AppCompatActivity {
     private StorageReference store;
     private DatabaseReference database;
     private StorageReference filepath;
+    private String imageEncoded;
 
     private ProgressDialog progress;
 
@@ -66,7 +67,7 @@ public class PostActivity extends AppCompatActivity {
 
     private File createImageFile() throws IOException {
         // Create an image file name
-        progress.setMessage("Create image file...");
+        progress.setMessage("Creating file...");
         progress.show();
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
@@ -84,23 +85,8 @@ public class PostActivity extends AppCompatActivity {
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                // Error occurred while creating the File...
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.example.android.fileprovider",
-                        photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
-            }
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         }
     }
 
@@ -126,24 +112,10 @@ public class PostActivity extends AppCompatActivity {
         takeImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 currentLat = gps.getLatitude();
                 currentLong = gps.getLongitude();
                 currentTime = Calendar.getInstance().getTime();
                 dispatchTakePictureIntent();
-               /* if(gps.canGetLocation()) {
-                    progress.setMessage("Getting info...");
-                    progress.show();
-                    //Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    currentLat = gps.getLatitude();
-                    currentLong = gps.getLongitude();
-                    currentTime = Calendar.getInstance().getTime();
-                    dispatchTakePictureIntent();
-                    progress.dismiss();
-                    /*if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-                    }
-                } */
             }
         });
 
@@ -163,31 +135,22 @@ public class PostActivity extends AppCompatActivity {
         final String title_val = mTitleBox.getText().toString().trim();
         final String desc_val = mDescriptionBox.getText().toString().trim();
 
-        if(!TextUtils.isEmpty(title_val) && !TextUtils.isEmpty(desc_val) && mImageUri != null){
+        if(!TextUtils.isEmpty(title_val) && !TextUtils.isEmpty(desc_val) && imageEncoded != null){
+            DatabaseReference newPost = database.push(); //unique ids for posts
 
-            //StorageReference filepath = store.child("Blog_Images").child(mImageUri.getLastPathSegment());
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 
-            filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+            newPost.child("Title").setValue(title_val);
+            newPost.child("Location").setValue(currentLat, currentLong);
+            newPost.child("Time").setValue(timeStamp);
+            newPost.child("Description").setValue(desc_val);
+            newPost.child("Image").setValue(imageEncoded);
+            //newPost.child("uid").setValue(FirebaseAuth.getInstance()); trying to get user id
 
-                    DatabaseReference newPost = database.push(); //unique ids for posts
+            startActivity(new Intent(PostActivity.this, EventsBlogPage.class));
 
-                    newPost.child("Title").setValue(title_val);
-                    newPost.child("Location").setValue(currentLat, currentLong);
-                    newPost.child("Time").setValue(currentTime);
-                    newPost.child("Description").setValue(desc_val);
-                    newPost.child("Image").setValue(downloadUrl.toString());
-                    //newPost.child("uid").setValue(FirebaseAuth.getInstance()); trying to get user id
-
-                    startActivity(new Intent(PostActivity.this, EventsBlogPage.class));
-
-                    progress.dismiss();
-                }
-            });
+            progress.dismiss();
         }
-
     }
 
     @Override
@@ -195,25 +158,12 @@ public class PostActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
-            progress.setMessage("Uploading...");
-            progress.show();
-            mImageUri = data.getData();
-            takeImage.setImageURI(mImageUri);
-
-            //StorageReference filepath = store.child("Blog_Images").child(mImageUri.getLastPathSegment());
-            filepath = store.child("Blog_Images").child(mImageUri.getLastPathSegment());
-            filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Toast.makeText(PostActivity.this, "Upload Successful!", Toast.LENGTH_SHORT).show();
-                    progress.dismiss();
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(PostActivity.this, "Upload Failed!", Toast.LENGTH_SHORT).show();
-                }
-            });
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            takeImage.setImageBitmap(imageBitmap);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+            imageEncoded = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
         }
     }
 
