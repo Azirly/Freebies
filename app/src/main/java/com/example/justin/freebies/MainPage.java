@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -19,11 +20,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Map;
+
 public class MainPage extends AppCompatActivity {
     // Write a message to the database
+
+    //Juston's Edits
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myRef = database.getReference("message");
+    DatabaseReference myRef = database.getReference()
+                                    .child("users");
     private static final String TAG = "MainActivity";
+
 
     public MainPage() {
         // Read from the database
@@ -32,9 +39,8 @@ public class MainPage extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                String value = dataSnapshot.getValue(String.class);
-                System.out.println(value);
-                Log.d(TAG, "Value is: " + value);
+                Object event_values = dataSnapshot.getValue();
+                Log.d(TAG, "Value is: " + event_values);
             }
 
             @Override
@@ -44,6 +50,9 @@ public class MainPage extends AppCompatActivity {
             }
         });
     }
+
+    //End of Juston's Edits
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
