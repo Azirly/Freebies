@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -40,7 +41,8 @@ import java.util.Date;
 
 public class PostActivity extends AppCompatActivity {
 
-    private ImageButton takeImage;
+    private Button takeImage;
+    private ImageView image;
     private EditText mTitleBox;
     private EditText mDescriptionBox;
 
@@ -98,7 +100,8 @@ public class PostActivity extends AppCompatActivity {
         store = FirebaseStorage.getInstance().getReference();
         database = FirebaseDatabase.getInstance().getReference().child("Blog");
 
-        takeImage = (ImageButton) findViewById(R.id.takeImage);
+        takeImage = (Button) findViewById(R.id.takeImage);
+        image = (ImageView) findViewById(R.id.image);
 
         mTitleBox = (EditText) findViewById(R.id.TitleBox);
         mDescriptionBox = (EditText) findViewById(R.id.DescriptionBox);
@@ -160,7 +163,7 @@ public class PostActivity extends AppCompatActivity {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
-            takeImage.setImageBitmap(imageBitmap);
+            image.setImageBitmap(imageBitmap);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
             imageEncoded = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
