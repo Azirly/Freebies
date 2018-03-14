@@ -55,7 +55,7 @@ def main():
     # events = graph.request('/search?q=Free&q=Food&type=event&limit=1') #finding an event just through search
     events = graph.request('search', {'center': '33.640495,-117.844296',
                                       'q': 'free irvine', #space values out and they will be searched through facebook's api
-                                      'fields': 'name,description,place,hours',
+                                      'fields': 'name,description,place,hours,cover',
                                       'type': 'event', 
                                       'limit': '3',
                                       'center': '33.640495,-117.844296',
