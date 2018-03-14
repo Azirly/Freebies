@@ -66,6 +66,8 @@ public class PostActivity extends AppCompatActivity {
 
     private File createImageFile() throws IOException {
         // Create an image file name
+        progress.setMessage("Create image file...");
+        progress.show();
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
@@ -94,7 +96,7 @@ public class PostActivity extends AppCompatActivity {
             // Continue only if the File was successfully created
             if (photoFile != null) {
                 Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.example.justin.freebies",
+                        "com.example.android.fileprovider",
                         photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
@@ -124,20 +126,24 @@ public class PostActivity extends AppCompatActivity {
         takeImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progress.setMessage("Getting info...");
-                progress.show();
-                if(gps.canGetLocation()) {
-                    //Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                //Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                currentLat = gps.getLatitude();
+                currentLong = gps.getLongitude();
+                currentTime = Calendar.getInstance().getTime();
+                dispatchTakePictureIntent();
+               /* if(gps.canGetLocation()) {
                     progress.setMessage("Getting info...");
                     progress.show();
+                    //Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     currentLat = gps.getLatitude();
                     currentLong = gps.getLongitude();
                     currentTime = Calendar.getInstance().getTime();
                     dispatchTakePictureIntent();
+                    progress.dismiss();
                     /*if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                         startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-                    }*/
-                }
+                    }
+                } */
             }
         });
 
