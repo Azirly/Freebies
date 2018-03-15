@@ -37,6 +37,30 @@
         android:scaleType="centerCrop"
         android:id="@+id/ic_gps"
         android:src="@drawable/ic_gps"/>
+
+    <Switch
+        android:id= "@+id/simpleSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:thumbTint="@color/wallet_holo_blue_light"
+        android:trackTint="@color/wallet_holo_blue_light"
+        android:paddingLeft="15dp"
+        android:paddingBottom="15dp"
+        android:paddingTop="15dp"
+        android:layout_alignParentLeft="true"
+        app:layout_constraintLeft_toLeftOf="@id/map" />
+
+    <TextView
+        android:id="@+id/switchText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor ="@color/gray"
+        android:paddingRight="15dp"
+        android:paddingBottom="15dp"
+        android:paddingTop="15dp"
+        android:textSize="14sp"
+        app:layout_constraintLeft_toRightOf="@+id/simpleSwitch"
+        android:gravity="center_horizontal" />
     <!--
     <RelativeLayout
         android:layout_width="match_parent"

@@ -1,6 +1,6 @@
 package com.example.justin.freebies;
 
-
+import java.util.*;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Geocoder;
@@ -16,6 +16,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.location.Location;
 import android.util.Log;
@@ -34,7 +36,6 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import java.util.Locale;
 
 
 public class MapPage extends AppCompatActivity implements OnMapReadyCallback, OnMarkerClickListener, OnMapClickListener, GoogleMap.OnInfoWindowClickListener {
@@ -47,9 +48,13 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
     private static final float DEFAULT_ZOOM = 15f;
     private Marker mSelectedMarker;
+    private List<Marker> eventMarkers = new ArrayList<Marker>();
+    private List<Marker> blogMarkers = new ArrayList<Marker>();
 
     //widget
     private ImageView mGps;
+    private Switch simpleSwitch;
+    private TextView switchText;
 
     //vars
     private Boolean mLocationPermissionsGranted = false;
@@ -111,30 +116,34 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
             init();
 
 
+
         }
     }
 
     private void init(){
 
-        LatLng sydney = new LatLng(-33.87365, 151.20689);
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(sydney)
-                .title("Marker in Sydney")
-                .snippet("This is an example snippet for sydney. You can put whatever you want here tbh");
 
-        InfoWindowData info = new InfoWindowData();
-        info.setDate("Date: " + "2:00pm March, 13 2018");
-        info.setLocation("Location: " + "Somewhere in this hell hole");
-
-        InfoWindowGMap customWindow = new InfoWindowGMap(this);
-        mMap.setInfoWindowAdapter(customWindow);
-
-        Marker m = mMap.addMarker(markerOptions);
-
-        m.setTag(info);
         //m.showInfoWindow();
 
 
+        //fillBlogs();
+        //fillEvents();
+
+        simpleSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (simpleSwitch.isChecked()){
+                    switchText.setText("Events");
+                    hideBlogs();
+                    //showEvents();
+                }
+                else{
+                    switchText.setText("Blogs");
+                    hideEvents();
+                    //showBlogs();
+                }
+            }
+        });
 
         mGps.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,8 +162,12 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_page);
-        mGps = (ImageView) findViewById(R.id.ic_gps);
 
+        mGps = (ImageView) findViewById(R.id.ic_gps);
+        simpleSwitch = (Switch) findViewById(R.id.simpleSwitch);
+        simpleSwitch.setChecked(false);
+        switchText = (TextView) findViewById(R.id.switchText);
+        switchText.setText("Blogs");
 
         getLocationPermission();
 
@@ -188,7 +201,6 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
                         if(task.isSuccessful()){
                             Log.d(TAG, "onComplete: found location!");
                             Location currentLocation = (Location) task.getResult();
-
                             moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), DEFAULT_ZOOM);
 
                         }else{
@@ -207,6 +219,7 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
         Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude );
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
     }
+
     private void getLocationPermission(){
         Log.d(TAG, "getLocationPermission: getting location permissions");
         String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
@@ -275,12 +288,62 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        //mSelectedMarker = null;
-        marker.hideInfoWindow();
-        marker.setVisible(false);
-
+        return;
     }
+
+
+    public void hideEvents(){
+        for (Marker marker : eventMarkers){
+            marker.remove();
+        }
+    }
+
+    public void hideBlogs(){
+        for (Marker marker : blogMarkers){
+            marker.remove();
+        }
+    }
+    public void fillEvents() {
+        blogMarkers.clear();
+    }
+
+    public void fillBlogs() {
+        blogMarkers.clear();
+    }
+
+    public void showBlogs() {
+    }
+
+    public void showEvents() {
+    }
+
+
+
+
+
+
+        /*
+        LatLng sydney = new LatLng(-33.87365, 151.20689);
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(sydney)
+                .title("Marker in Sydney")
+                .snippet("This is an example snippet for sydney. You can put whatever you want here tbh");
+
+        InfoWindowData info = new InfoWindowData();
+        info.setDate("Date: " + "2:00pm March, 13 2018");
+        info.setLocation("Location: " + "Somewhere in this hell hole");
+
+
+        InfoWindowGMap customWindow = new InfoWindowGMap(this);
+        mMap.setInfoWindowAdapter(customWindow);
+
+        Marker m = mMap.addMarker(markerOptions);
+        m.setTag(info);
+        */
+
 }
+
+
 
 
 
