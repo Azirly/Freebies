@@ -14,6 +14,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 import android.location.Location;
 import android.util.Log;
@@ -45,6 +47,9 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
     private static final float DEFAULT_ZOOM = 15f;
     private Marker mSelectedMarker;
+
+    //widget
+    private ImageView mGps;
 
     //vars
     private Boolean mLocationPermissionsGranted = false;
@@ -102,35 +107,54 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
 
-            LatLng sydney = new LatLng(-33.87365, 151.20689);
-            MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.position(sydney)
-                        .title("Marker in Sydney")
-                        .snippet("This is an example snippet for sydney. You can put whatever you want here tbh");
 
-            InfoWindowData info = new InfoWindowData();
-            info.setDate("Date: " + "2:00pm March, 13 2018");
-            info.setLocation("Location: " + "Somewhere in this hell hole");
-
-            InfoWindowGMap customWindow = new InfoWindowGMap(this);
-            mMap.setInfoWindowAdapter(customWindow);
-
-            Marker m = mMap.addMarker(markerOptions);
-
-            m.setTag(info);
-            //m.showInfoWindow();
-
-            moveCamera(sydney,DEFAULT_ZOOM);
-
+            init();
 
 
         }
     }
 
+    private void init(){
+
+        LatLng sydney = new LatLng(-33.87365, 151.20689);
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(sydney)
+                .title("Marker in Sydney")
+                .snippet("This is an example snippet for sydney. You can put whatever you want here tbh");
+
+        InfoWindowData info = new InfoWindowData();
+        info.setDate("Date: " + "2:00pm March, 13 2018");
+        info.setLocation("Location: " + "Somewhere in this hell hole");
+
+        InfoWindowGMap customWindow = new InfoWindowGMap(this);
+        mMap.setInfoWindowAdapter(customWindow);
+
+        Marker m = mMap.addMarker(markerOptions);
+
+        m.setTag(info);
+        //m.showInfoWindow();
+
+
+
+        mGps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "onClick: clicked gps icon");
+                getDeviceLocation();
+            }
+        });
+
+
+        moveCamera(sydney,DEFAULT_ZOOM);
+    }
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_page);
+        mGps = (ImageView) findViewById(R.id.ic_gps);
+
 
         getLocationPermission();
 
@@ -165,7 +189,7 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
                             Log.d(TAG, "onComplete: found location!");
                             Location currentLocation = (Location) task.getResult();
 
-                            //moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), DEFAULT_ZOOM);
+                            moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), DEFAULT_ZOOM);
 
                         }else{
                             Log.d(TAG, "onComplete: current location is null");

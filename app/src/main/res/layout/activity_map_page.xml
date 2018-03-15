@@ -27,6 +27,16 @@
         app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintTop_toTopOf="parent"
         tools:context="com.example.justin.freebies..MapPage" />
+
+    <ImageView
+        android:padding="5dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
+        app:layout_constraintRight_toRightOf="@id/map"
+        android:scaleType="centerCrop"
+        android:id="@+id/ic_gps"
+        android:src="@drawable/ic_gps"/>
     <!--
     <RelativeLayout
         android:layout_width="match_parent"
@@ -58,16 +68,7 @@
         android:hint="Enter Address, City or Zip Code"
         android:imeOptions="actionSearch"/>
 
-    <ImageView
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_below="@id/relLayout1"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:scaleType="centerCrop"
-        android:id="@+id/ic_gps"
-        android:src="@drawable/ic_gps"/>
+
     -->
 
 </android.support.constraint.ConstraintLayout>
