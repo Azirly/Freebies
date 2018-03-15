@@ -153,7 +153,11 @@ public class PostActivity extends AppCompatActivity {
 
                         DatabaseReference newPost = database.push(); //unique ids for posts
 
+                        String timeStamp = new SimpleDateFormat("MM-dd-yyyy K:mm a, z").format(new Date());
+                        
                         newPost.child("Title").setValue(title_val);
+                        newPost.child("Location").setValue(currentLat + ", " + currentLong);
+                        newPost.child("Time").setValue(timeStamp);
                         newPost.child("Description").setValue(desc_val);
                         newPost.child("Image").setValue(downloadUrl.toString());
                         //newPost.child("uid").setValue(FirebaseAuth.getInstance()); trying to get user id
