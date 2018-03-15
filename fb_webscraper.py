@@ -53,13 +53,14 @@ def main():
     # events = graph.search(type='event')
     # events = graph.get_object(id='158348781378124')
     # events = graph.request('/search?q=Free&q=Food&type=event&limit=1') #finding an event just through search
-    events = graph.request('search', {'center': '33.640495,-117.844296',
-                                      'q': 'free irvine', #space values out and they will be searched through facebook's api
+    events = graph.request('search', { #'center': '33.640495,-117.844296',
+                                      'q': 'irvine', #space values out and they will be searched through facebook's api
                                       'fields': 'name,description,place,hours,cover',
                                       'type': 'event', 
-                                      'limit': '3',
-                                      'center': '33.640495,-117.844296',
-                                      'distance': '100'}) #finding an event just through search
+                                      'limit': '10'
+                                      #'center': '33.640495,-117.844296',
+                                      #'distance': '100'
+                                      }) #finding an event just through search
 
     ###Now figure out how to store it
     ###Then figure out how to store them into firebase 
