@@ -31,7 +31,6 @@ public class MainPage extends AppCompatActivity {
                                     .child("users");
     private static final String TAG = "MainActivity";
 
-
     public MainPage() {
         // Read from the database
         myRef.addValueEventListener(new ValueEventListener() {
