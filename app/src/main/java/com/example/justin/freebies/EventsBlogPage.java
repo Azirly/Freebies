@@ -1,17 +1,20 @@
 package com.example.justin.freebies;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -19,12 +22,11 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.squareup.picasso.Picasso;
 
 public class EventsBlogPage extends AppCompatActivity {
 
     private RecyclerView blogList;
-
-    private DatabaseReference mData;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -84,22 +86,16 @@ public class EventsBlogPage extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        mData = FirebaseDatabase.getInstance().getReference().child("Blog");
-
-        Query mDataQuery = mData.orderByValue();
+        Query mDataQuery = FirebaseDatabase.getInstance().getReference().child("Blog");
 
         FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<Blog>().setQuery(mDataQuery, Blog.class).build();
-
-        /*      Blog.class,
-                R.layout.blog_row,
-                BlogViewHolder.class,
-                mData*/
 
         FirebaseRecyclerAdapter<Blog, BlogViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Blog, BlogViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull BlogViewHolder holder, int position, @NonNull Blog model) {
                 holder.setTitle(model.getTitle());
-                holder.setDesc(model.getDesk());
+                holder.setDesc(model.getDescription());
+                holder.setImage(model.getImage());
             }
 
             @NonNull
@@ -110,6 +106,7 @@ public class EventsBlogPage extends AppCompatActivity {
             }
         };
 
+        firebaseRecyclerAdapter.startListening();
         blogList.setAdapter(firebaseRecyclerAdapter);
 
     }
@@ -135,6 +132,17 @@ public class EventsBlogPage extends AppCompatActivity {
             postDesc.setText(desc);
         }
 
+        public void setImage(String image) {
+            ImageView postImage = (ImageView) mView.findViewById(R.id.post_image);
+            if(image.contains("firebasestorage")) {
+                Picasso.get().load(image).into(postImage);
+            }
+            else
+            {
+                byte[] decodedByteArray = android.util.Base64.decode(image, Base64.DEFAULT);
+                postImage.setImageBitmap(BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length));
+            }
+        }
     }
 
     @Override

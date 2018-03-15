@@ -22,12 +22,12 @@ public class Blog {
         this.Title = title;
     }
 
-    public String getDesk() {
+    public String getDescription() {
         return Description;
     }
 
-    public void setDesk(String desk) {
-        this.Description = desk;
+    public void setDescription(String description) {
+        this.Description = description;
     }
 
     public String getImage() {

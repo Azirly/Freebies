@@ -141,10 +141,10 @@ public class PostActivity extends AppCompatActivity {
         if(!TextUtils.isEmpty(title_val) && !TextUtils.isEmpty(desc_val) && imageEncoded != null){
             DatabaseReference newPost = database.push(); //unique ids for posts
 
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            String timeStamp = new SimpleDateFormat("MM-dd-yyyy K:mm a, z").format(new Date());
 
             newPost.child("Title").setValue(title_val);
-            newPost.child("Location").setValue(currentLat, currentLong);
+            newPost.child("Location").setValue(currentLat + ", " + currentLong);
             newPost.child("Time").setValue(timeStamp);
             newPost.child("Description").setValue(desc_val);
             newPost.child("Image").setValue(imageEncoded);
