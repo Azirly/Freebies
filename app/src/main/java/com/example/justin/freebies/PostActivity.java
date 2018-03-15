@@ -102,14 +102,11 @@ public class PostActivity extends AppCompatActivity {
         takeImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!selectedImage) {
+                if (!selectedImage) {
                     currentLat = gps.getLatitude();
                     currentLong = gps.getLongitude();
-                    tookImage = true;
                     dispatchTakePictureIntent();
-                }
-                else
-                {
+                } else {
                     Toast.makeText(PostActivity.this, "Already selected an image.", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -118,21 +115,18 @@ public class PostActivity extends AppCompatActivity {
         uploadImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!tookImage) {
+                if (!tookImage) {
                     currentLat = gps.getLatitude();
                     currentLong = gps.getLongitude();
                     Intent gallery = new Intent(Intent.ACTION_GET_CONTENT);
                     gallery.setType("image/*");
-                    selectedImage = true;
                     startActivityForResult(gallery, Gallery_Req);
-                }
-                else
-                {
+                } else {
                     Toast.makeText(PostActivity.this, "Already took an image.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-        mSubmitPostButton.setOnClickListener(new View.OnClickListener(){
+        mSubmitPostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startPosting();
@@ -148,30 +142,28 @@ public class PostActivity extends AppCompatActivity {
         final String title_val = mTitleBox.getText().toString().trim();
         final String desc_val = mDescriptionBox.getText().toString().trim();
 
-        if(!TextUtils.isEmpty(title_val) && !TextUtils.isEmpty(desc_val) && (imageEncoded != null || mImageUri !=null)){
-            if(selectedImage)
-            {
+        if (!TextUtils.isEmpty(title_val) && !TextUtils.isEmpty(desc_val) && (imageEncoded != null || mImageUri != null)) {
+            if (selectedImage) {
                 StorageReference filepath = store.child("Blog_Images").child(mImageUri.getLastPathSegment());
 
                 filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                                                     @Override
-                                                                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                                                         Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
 
-                                                                         DatabaseReference newPost = database.push(); //unique ids for posts
+                        DatabaseReference newPost = database.push(); //unique ids for posts
 
-                                                                         newPost.child("Title").setValue(title_val);
-                                                                         newPost.child("Description").setValue(desc_val);
-                                                                         newPost.child("Image").setValue(downloadUrl.toString());
-                                                                         //newPost.child("uid").setValue(FirebaseAuth.getInstance()); trying to get user id
+                        newPost.child("Title").setValue(title_val);
+                        newPost.child("Description").setValue(desc_val);
+                        newPost.child("Image").setValue(downloadUrl.toString());
+                        //newPost.child("uid").setValue(FirebaseAuth.getInstance()); trying to get user id
 
-                                                                         startActivity(new Intent(PostActivity.this, EventsBlogPage.class));
+                        startActivity(new Intent(PostActivity.this, EventsBlogPage.class));
 
-                                                                         progress.dismiss();
-                                                                     }
+                        progress.dismiss();
+                    }
                 });
-            }
-            else {
+            } else {
 
                 DatabaseReference newPost = database.push(); //unique ids for posts
 
@@ -196,14 +188,16 @@ public class PostActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-                Bundle extras = data.getExtras();
-                Bitmap imageBitmap = (Bitmap) extras.get("data");
-                image.setImageBitmap(imageBitmap);
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-                imageEncoded = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
+            tookImage = true;
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            image.setImageBitmap(imageBitmap);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+            imageEncoded = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
         }
-        if (requestCode == Gallery_Req && resultCode == RESULT_OK){
+        if (requestCode == Gallery_Req && resultCode == RESULT_OK) {
+            selectedImage = true;
             mImageUri = data.getData();
             image.setImageURI(mImageUri);
         }
