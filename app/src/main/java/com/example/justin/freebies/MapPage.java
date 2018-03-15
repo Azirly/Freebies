@@ -35,7 +35,7 @@ import com.google.android.gms.tasks.Task;
 import java.util.Locale;
 
 
-public class MapPage extends AppCompatActivity implements OnMapReadyCallback, OnMarkerClickListener, OnMapClickListener{
+public class MapPage extends AppCompatActivity implements OnMapReadyCallback, OnMarkerClickListener, OnMapClickListener, GoogleMap.OnInfoWindowClickListener {
 
 
     private static final String TAG = "MapPage";
@@ -109,8 +109,8 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
                         .snippet("This is an example snippet for sydney. You can put whatever you want here tbh");
 
             InfoWindowData info = new InfoWindowData();
-            info.setDate("2:00pm March, 13 2018");
-            info.setLocation("Somewhere in this hell hole");
+            info.setDate("Date: " + "2:00pm March, 13 2018");
+            info.setLocation("Location: " + "Somewhere in this hell hole");
 
             InfoWindowGMap customWindow = new InfoWindowGMap(this);
             mMap.setInfoWindowAdapter(customWindow);
@@ -118,10 +118,9 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
             Marker m = mMap.addMarker(markerOptions);
 
             m.setTag(info);
-
             //m.showInfoWindow();
 
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+            moveCamera(sydney,DEFAULT_ZOOM);
 
 
 
@@ -239,16 +238,24 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        if (marker.equals(mSelectedMarker)) {
+        if (mSelectedMarker != null && marker.equals(mSelectedMarker)) {
             mSelectedMarker = null;
             marker.hideInfoWindow();
             return true;
         }
-        mSelectedMarker = marker;
-        marker.showInfoWindow();
-        return false;
+        else{
+            mSelectedMarker = marker;
+            return false;
+        }
     }
 
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        //mSelectedMarker = null;
+        marker.hideInfoWindow();
+        marker.setVisible(false);
+
+    }
 }
 
 
