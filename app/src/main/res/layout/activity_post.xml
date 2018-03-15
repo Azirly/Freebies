@@ -56,8 +56,8 @@
 
     <Button
         android:id="@+id/takeImage"
-        android:layout_width="145dp"
-        android:layout_height="45dp"
+        android:layout_width="115dp"
+        android:layout_height="30dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -74,8 +74,8 @@
 
     <Button
         android:id="@+id/uploadImage"
-        android:layout_width="145dp"
-        android:layout_height="45dp"
+        android:layout_width="115dp"
+        android:layout_height="30dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -93,8 +93,8 @@
 
     <ImageView
         android:id="@+id/image"
-        android:layout_width="239dp"
-        android:layout_height="239dp"
+        android:layout_width="216dp"
+        android:layout_height="212dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -102,6 +102,6 @@
         app:layout_constraintBottom_toTopOf="@+id/takeImage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"  />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

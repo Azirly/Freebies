@@ -42,6 +42,9 @@ import java.util.Date;
 public class PostActivity extends AppCompatActivity {
 
     private Button takeImage;
+    private Button uploadImage;
+    private boolean tookImage;
+    private boolean selectedImage;
     private ImageView image;
     private EditText mTitleBox;
     private EditText mDescriptionBox;
@@ -53,6 +56,7 @@ public class PostActivity extends AppCompatActivity {
 
     private static final int REQUEST_IMAGE_CAPTURE = 111;
     private static final int CAMERA_REQUEST_CODE = 1;
+    private static final int Gallery_Req = 1;
 
     private StorageReference store;
     private DatabaseReference database;
@@ -64,26 +68,6 @@ public class PostActivity extends AppCompatActivity {
     private GPSTracker gps;
     private double currentLat;
     private double currentLong;
-    private Date currentTime;
-
-
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        progress.setMessage("Creating file...");
-        progress.show();
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
-        return image;
-    }
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -101,6 +85,9 @@ public class PostActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance().getReference().child("Blog");
 
         takeImage = (Button) findViewById(R.id.takeImage);
+        uploadImage = (Button) findViewById(R.id.uploadImage);
+        tookImage = false;
+        selectedImage = false;
         image = (ImageView) findViewById(R.id.image);
 
         mTitleBox = (EditText) findViewById(R.id.TitleBox);
@@ -115,13 +102,36 @@ public class PostActivity extends AppCompatActivity {
         takeImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                currentLat = gps.getLatitude();
-                currentLong = gps.getLongitude();
-                currentTime = Calendar.getInstance().getTime();
-                dispatchTakePictureIntent();
+                if(!selectedImage) {
+                    currentLat = gps.getLatitude();
+                    currentLong = gps.getLongitude();
+                    tookImage = true;
+                    dispatchTakePictureIntent();
+                }
+                else
+                {
+                    Toast.makeText(PostActivity.this, "Already selected an image.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
+        uploadImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!tookImage) {
+                    currentLat = gps.getLatitude();
+                    currentLong = gps.getLongitude();
+                    Intent gallery = new Intent(Intent.ACTION_GET_CONTENT);
+                    gallery.setType("image/*");
+                    selectedImage = true;
+                    startActivityForResult(gallery, Gallery_Req);
+                }
+                else
+                {
+                    Toast.makeText(PostActivity.this, "Already took an image.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
         mSubmitPostButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -138,21 +148,46 @@ public class PostActivity extends AppCompatActivity {
         final String title_val = mTitleBox.getText().toString().trim();
         final String desc_val = mDescriptionBox.getText().toString().trim();
 
-        if(!TextUtils.isEmpty(title_val) && !TextUtils.isEmpty(desc_val) && imageEncoded != null){
-            DatabaseReference newPost = database.push(); //unique ids for posts
+        if(!TextUtils.isEmpty(title_val) && !TextUtils.isEmpty(desc_val) && (imageEncoded != null || mImageUri !=null)){
+            if(selectedImage)
+            {
+                StorageReference filepath = store.child("Blog_Images").child(mImageUri.getLastPathSegment());
 
-            String timeStamp = new SimpleDateFormat("MM-dd-yyyy K:mm a, z").format(new Date());
+                filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                                                     @Override
+                                                                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                                                         Uri downloadUrl = taskSnapshot.getDownloadUrl();
 
-            newPost.child("Title").setValue(title_val);
-            newPost.child("Location").setValue(currentLat + ", " + currentLong);
-            newPost.child("Time").setValue(timeStamp);
-            newPost.child("Description").setValue(desc_val);
-            newPost.child("Image").setValue(imageEncoded);
-            //newPost.child("uid").setValue(FirebaseAuth.getInstance()); trying to get user id
+                                                                         DatabaseReference newPost = database.push(); //unique ids for posts
 
-            startActivity(new Intent(PostActivity.this, EventsBlogPage.class));
+                                                                         newPost.child("Title").setValue(title_val);
+                                                                         newPost.child("Description").setValue(desc_val);
+                                                                         newPost.child("Image").setValue(downloadUrl.toString());
+                                                                         //newPost.child("uid").setValue(FirebaseAuth.getInstance()); trying to get user id
 
-            progress.dismiss();
+                                                                         startActivity(new Intent(PostActivity.this, EventsBlogPage.class));
+
+                                                                         progress.dismiss();
+                                                                     }
+                });
+            }
+            else {
+
+                DatabaseReference newPost = database.push(); //unique ids for posts
+
+                String timeStamp = new SimpleDateFormat("MM-dd-yyyy K:mm a, z").format(new Date());
+
+                newPost.child("Title").setValue(title_val);
+                newPost.child("Location").setValue(currentLat + ", " + currentLong);
+                newPost.child("Time").setValue(timeStamp);
+                newPost.child("Description").setValue(desc_val);
+                newPost.child("Image").setValue(imageEncoded);
+                //newPost.child("uid").setValue(FirebaseAuth.getInstance()); trying to get user id
+
+                startActivity(new Intent(PostActivity.this, EventsBlogPage.class));
+
+                progress.dismiss();
+            }
         }
     }
 
@@ -160,14 +195,19 @@ public class PostActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            image.setImageBitmap(imageBitmap);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-            imageEncoded = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+                Bundle extras = data.getExtras();
+                Bitmap imageBitmap = (Bitmap) extras.get("data");
+                image.setImageBitmap(imageBitmap);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                imageEncoded = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
         }
+        if (requestCode == Gallery_Req && resultCode == RESULT_OK){
+            mImageUri = data.getData();
+            image.setImageURI(mImageUri);
+        }
+
     }
 
 }
