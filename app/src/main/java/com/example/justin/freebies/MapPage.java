@@ -167,10 +167,9 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
 
         mGps = (ImageView) findViewById(R.id.ic_gps);
         simpleSwitch = (Switch) findViewById(R.id.simpleSwitch);
-        simpleSwitch.setChecked(false);
         switchText = (TextView) findViewById(R.id.switchText);
         switchText.setText("Blogs");
-
+        fireBaseSetup();
         getLocationPermission();
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
@@ -306,33 +305,11 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
         }
     }
     public void fillEvents() {
-        eventMarkers.clear();
+        //eventMarkers.clear();
     }
 
     public void fillBlogs() {
-        blogMarkers.clear();
-
-        FirebaseDatabase.getInstance().getReference().child("Blog").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-
-                            InfoWindowData info = new InfoWindowData();
-
-                            info.setTitle(snapshot.child("Title").getValue().toString());
-                            info.setDescription(snapshot.child("Description").getValue().toString());
-                            info.setLatLng(new LatLng(Double.parseDouble(snapshot.child("Location").getValue().toString().split(",")[0]), Double.parseDouble(snapshot.child("Location").getValue().toString().split(",")[1])));
-                            info.setDate(snapshot.child("Time").getValue().toString());
-                            info.setLocation(snapshot.child("Location").getValue().toString());
-                            info.setImage(snapshot.child("Image").getValue().toString());
-
-                            infoData.add(info);
-                        }
-                    }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {}
-        });
+       //blogMarkers.clear();
         for (InfoWindowData winData: infoData){
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(winData.getLatLng()).title(winData.getTitle()).snippet(winData.getDescription());
@@ -341,14 +318,14 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
             mMap.setInfoWindowAdapter(customWindow);
             Marker m = mMap.addMarker(markerOptions);
             m.setTag(winData);
-            m.setVisible(false);
+            m.setVisible(true);
             blogMarkers.add(m);
         }
-
+        //infoData.clear();
     }
 
     public void showEvents() {
-        fillEvents();
+        //fillEvents();
         for(Marker m: eventMarkers){
             m.setVisible(true);
         }
@@ -362,6 +339,29 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
         }
     }
 
+    public void fireBaseSetup(){
+        FirebaseDatabase.getInstance().getReference().child("Blog").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+
+                    InfoWindowData info = new InfoWindowData();
+
+                    info.setTitle(snapshot.child("Title").getValue().toString());
+                    info.setDescription(snapshot.child("Description").getValue().toString());
+                    info.setLatLng(new LatLng(Double.parseDouble(snapshot.child("Location").getValue().toString().split(",")[0]), Double.parseDouble(snapshot.child("Location").getValue().toString().split(",")[1])));
+                    info.setDate(snapshot.child("Time").getValue().toString());
+                    info.setLocation(snapshot.child("Location").getValue().toString());
+                    info.setImage(snapshot.child("Image").getValue().toString());
+
+                    infoData.add(info);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+    }
         /*
         LatLng sydney = new LatLng(-33.87365, 151.20689);
         MarkerOptions markerOptions = new MarkerOptions();
