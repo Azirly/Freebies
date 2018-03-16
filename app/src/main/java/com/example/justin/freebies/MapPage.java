@@ -54,7 +54,8 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
     private Marker mSelectedMarker;
     private List<Marker> eventMarkers = new ArrayList<Marker>();
     private List<Marker> blogMarkers = new ArrayList<Marker>();
-    private List<InfoWindowData> infoData = new ArrayList<InfoWindowData>();
+    private List<InfoWindowData> blogInfoData = new ArrayList<InfoWindowData>();
+    private List<InfoWindowData> eventInfoData = new ArrayList<InfoWindowData>();
 
     //widget
     private ImageView mGps;
@@ -305,12 +306,23 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
         }
     }
     public void fillEvents() {
-        //eventMarkers.clear();
+        eventMarkers.clear();
+        for (InfoWindowData winData: eventInfoData){
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(winData.getLatLng()).title(winData.getTitle()).snippet(winData.getDescription());
+
+            InfoWindowGMap customWindow = new InfoWindowGMap(this);
+            mMap.setInfoWindowAdapter(customWindow);
+            Marker m = mMap.addMarker(markerOptions);
+            m.setTag(winData);
+            m.setVisible(true);
+            eventMarkers.add(m);
+        }
     }
 
     public void fillBlogs() {
-       //blogMarkers.clear();
-        for (InfoWindowData winData: infoData){
+       blogMarkers.clear();
+        for (InfoWindowData winData: blogInfoData){
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(winData.getLatLng()).title(winData.getTitle()).snippet(winData.getDescription());
 
@@ -321,11 +333,10 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
             m.setVisible(true);
             blogMarkers.add(m);
         }
-        //infoData.clear();
     }
 
     public void showEvents() {
-        //fillEvents();
+        fillEvents();
         for(Marker m: eventMarkers){
             m.setVisible(true);
         }
@@ -340,6 +351,8 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
     }
 
     public void fireBaseSetup(){
+        blogInfoData.clear();
+        eventInfoData.clear();
         FirebaseDatabase.getInstance().getReference().child("Blog").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -354,7 +367,7 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
                     info.setLocation(snapshot.child("Location").getValue().toString());
                     info.setImage(snapshot.child("Image").getValue().toString());
 
-                    infoData.add(info);
+                    blogInfoData.add(info);
                 }
             }
 
