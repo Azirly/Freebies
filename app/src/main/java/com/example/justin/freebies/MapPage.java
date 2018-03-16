@@ -36,6 +36,10 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 
 public class MapPage extends AppCompatActivity implements OnMapReadyCallback, OnMarkerClickListener, OnMapClickListener, GoogleMap.OnInfoWindowClickListener {
@@ -50,6 +54,7 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
     private Marker mSelectedMarker;
     private List<Marker> eventMarkers = new ArrayList<Marker>();
     private List<Marker> blogMarkers = new ArrayList<Marker>();
+    private List<InfoWindowData> infoData = new ArrayList<InfoWindowData>();
 
     //widget
     private ImageView mGps;
@@ -61,9 +66,7 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch(item.getItemId()) {
@@ -112,7 +115,6 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
 
-
             init();
 
 
@@ -125,7 +127,7 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
 
         //m.showInfoWindow();
 
-
+        //showBlogs();
         //fillBlogs();
         //fillEvents();
 
@@ -140,7 +142,7 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
                 else{
                     switchText.setText("Blogs");
                     hideEvents();
-                    //showBlogs();
+                    showBlogs();
                 }
             }
         });
@@ -154,7 +156,7 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
         });
 
 
-        moveCamera(sydney,DEFAULT_ZOOM);
+        //moveCamera(sydney,DEFAULT_ZOOM);
     }
 
 
@@ -294,33 +296,71 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
 
     public void hideEvents(){
         for (Marker marker : eventMarkers){
-            marker.remove();
+            marker.setVisible(false);
         }
     }
 
     public void hideBlogs(){
         for (Marker marker : blogMarkers){
-            marker.remove();
+            marker.setVisible(false);
         }
     }
     public void fillEvents() {
-        blogMarkers.clear();
+        eventMarkers.clear();
     }
 
     public void fillBlogs() {
         blogMarkers.clear();
-    }
 
-    public void showBlogs() {
+        FirebaseDatabase.getInstance().getReference().child("Blog").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+
+                            InfoWindowData info = new InfoWindowData();
+
+                            info.setTitle(snapshot.child("Title").getValue().toString());
+                            info.setDescription(snapshot.child("Description").getValue().toString());
+                            info.setLatLng(new LatLng(Double.parseDouble(snapshot.child("Location").getValue().toString().split(",")[0]), Double.parseDouble(snapshot.child("Location").getValue().toString().split(",")[1])));
+                            info.setDate(snapshot.child("Time").getValue().toString());
+                            info.setLocation(snapshot.child("Location").getValue().toString());
+                            info.setImage(snapshot.child("Image").getValue().toString());
+
+                            infoData.add(info);
+                        }
+                    }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+        for (InfoWindowData winData: infoData){
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(winData.getLatLng()).title(winData.getTitle()).snippet(winData.getDescription());
+
+            InfoWindowGMap customWindow = new InfoWindowGMap(this);
+            mMap.setInfoWindowAdapter(customWindow);
+            Marker m = mMap.addMarker(markerOptions);
+            m.setTag(winData);
+            m.setVisible(false);
+            blogMarkers.add(m);
+        }
+
     }
 
     public void showEvents() {
+        fillEvents();
+        for(Marker m: eventMarkers){
+            m.setVisible(true);
+        }
+
     }
 
-
-
-
-
+    public void showBlogs() {
+        fillBlogs();
+        for(Marker m: blogMarkers){
+            m.setVisible(true);
+        }
+    }
 
         /*
         LatLng sydney = new LatLng(-33.87365, 151.20689);
