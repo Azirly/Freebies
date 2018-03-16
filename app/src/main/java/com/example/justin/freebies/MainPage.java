@@ -10,6 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.algolia.search.saas.Client;
+import com.algolia.search.saas.Index;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -51,6 +53,9 @@ public class MainPage extends AppCompatActivity {
     }
 
     //End of Juston's Edits
+
+    Client client = new Client("VDDFPCSHAG", "943976b36913fdfc82b3262789cc6262");
+    Index index = client.getIndex("your_index_name");
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
