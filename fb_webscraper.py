@@ -76,9 +76,9 @@ def main():
     
     
     ###Write to a json file
-    # file = open("testfile.json","w") 
-    # file.write(json_events)
-    # file.close()
+    file = open("testfile.json","w") 
+    file.write(json_events)
+    file.close()
 
     '''
     Then figure out a search system

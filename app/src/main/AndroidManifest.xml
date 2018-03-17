@@ -33,7 +33,13 @@
         <activity android:name=".StartUpLogin" />
         <activity android:name=".MapPage" />
         <activity android:name=".Register"></activity>
-
+        <activity android:name=".SearchableActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data android:name="android.app.searchable"
+                       android:resource="@xml/searchable"/>
+        </activity>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDdRDvBs0PAMqCHGGSBfV5-gMDsCoIDnBc" />

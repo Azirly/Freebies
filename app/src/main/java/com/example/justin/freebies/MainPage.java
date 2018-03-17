@@ -52,10 +52,14 @@ public class MainPage extends AppCompatActivity {
         });
     }
 
+/*
+    Client second_client = new Client("VDDFPCSHAG", "943976b36913fdfc82b3262789cc6262");
+    Index second_index = client.getIndex("your_index_name");
+    Index index = client.initIndex("contacts");
+*/
+
     //End of Juston's Edits
 
-    Client client = new Client("VDDFPCSHAG", "943976b36913fdfc82b3262789cc6262");
-    Index index = client.getIndex("your_index_name");
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
