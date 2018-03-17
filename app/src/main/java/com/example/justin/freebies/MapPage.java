@@ -138,7 +138,7 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
                 if (simpleSwitch.isChecked()){
                     switchText.setText("Events");
                     hideBlogs();
-                    //showEvents();
+                    showEvents();
                 }
                 else{
                     switchText.setText("Blogs");
@@ -336,7 +336,9 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
     }
 
     public void showEvents() {
-        fillEvents();
+        if(eventMarkers.size() == 0){
+            fillEvents();
+        }
         for(Marker m: eventMarkers){
             m.setVisible(true);
         }
@@ -344,7 +346,9 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
     }
 
     public void showBlogs() {
-        fillBlogs();
+        if(blogMarkers.size() == 0){
+            fillBlogs();
+        }
         for(Marker m: blogMarkers){
             m.setVisible(true);
         }
@@ -374,26 +378,8 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
             @Override
             public void onCancelled(DatabaseError databaseError) {}
         });
+
     }
-        /*
-        LatLng sydney = new LatLng(-33.87365, 151.20689);
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(sydney)
-                .title("Marker in Sydney")
-                .snippet("This is an example snippet for sydney. You can put whatever you want here tbh");
-
-        InfoWindowData info = new InfoWindowData();
-        info.setDate("Date: " + "2:00pm March, 13 2018");
-        info.setLocation("Location: " + "Somewhere in this hell hole");
-
-
-        InfoWindowGMap customWindow = new InfoWindowGMap(this);
-        mMap.setInfoWindowAdapter(customWindow);
-
-        Marker m = mMap.addMarker(markerOptions);
-        m.setTag(info);
-        */
-
 }
 
 
