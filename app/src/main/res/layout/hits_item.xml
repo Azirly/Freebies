@@ -1,28 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:algolia="http://schemas.android.com/apk/res-auto">
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/product_image"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_margin="10dp"
-            android:scaleType="fitCenter"
-            algolia:attribute='@{"image"}'/>
+        android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/product_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            algolia:attribute='@{"name"}'/>
-
+            android:id="@+id/street"/>
         <TextView
-            android:id="@+id/product_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            algolia:attribute='@{"salePrice"}'/>
+            android:id="@+id/name"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/description"
+            algolia:attribute='@{"description"}'/>
+
     </LinearLayout>
 </layout>

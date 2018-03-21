@@ -10,6 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.algolia.instantsearch.helpers.InstantSearch;
+import com.algolia.instantsearch.helpers.Searcher;
 import com.algolia.search.saas.Client;
 import com.algolia.search.saas.Index;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -26,7 +28,7 @@ import java.util.Map;
 
 public class MainPage extends AppCompatActivity {
     // Write a message to the database
-
+/*
     //Juston's Edits
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference()
@@ -51,7 +53,7 @@ public class MainPage extends AppCompatActivity {
             }
         });
     }
-
+*/
 /*
     Client second_client = new Client("VDDFPCSHAG", "943976b36913fdfc82b3262789cc6262");
     Index second_index = client.getIndex("your_index_name");
@@ -60,6 +62,11 @@ public class MainPage extends AppCompatActivity {
 
     //End of Juston's Edits
 
+    private static final String ALGOLIA_APP_ID = "VDDFPCSHAG";
+    private static final String ALGOLIA_SEARCH_API_KEY = "943976b36913fdfc82b3262789cc6262";
+    private static final String ALGOLIA_INDEX_NAME = "your_index_name";
+
+    private Searcher searcher;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -105,6 +112,9 @@ public class MainPage extends AppCompatActivity {
         Menu menu = navigation.getMenu();
         MenuItem menuItem = menu.getItem(0);
         menuItem.setChecked(true);
+        searcher = Searcher.create(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, ALGOLIA_INDEX_NAME);
+        InstantSearch helper = new InstantSearch(this, searcher);
+        helper.search();
     }
 
 }
