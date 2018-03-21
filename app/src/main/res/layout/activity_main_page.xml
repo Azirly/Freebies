@@ -15,7 +15,8 @@
     <com.algolia.instantsearch.ui.views.SearchBox
         android:id="@+id/search_box"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        algolia:autoHideKeyboard="true"/>
 
     <com.algolia.instantsearch.ui.views.Hits
         android:id="@+id/algohits"
@@ -23,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        algolia:itemLayout="@layout/hits_item" />
+        algolia:itemLayout="@layout/hits_item"/>
 </LinearLayout>
 
     <android.support.design.widget.BottomNavigationView

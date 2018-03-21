@@ -30,6 +30,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="TextView"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
             tools:layout_editor_absoluteX="34dp"
             tools:layout_editor_absoluteY="34dp" />
@@ -37,10 +39,12 @@
 
         <Button
             android:id="@+id/buttonSignOut"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
             android:layout_height="wrap_content"
             android:text="Sign Out"
-            tools:layout_editor_absoluteX="280dp"
+            android:layout_marginTop="100dp"
+            tools:layout_editor_absoluteX="500dp"
             tools:layout_editor_absoluteY="380dp" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

@@ -13,18 +13,29 @@
             android:id="@+id/post_image"
             android:layout_width="match_parent"
             android:layout_height="182dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
             app:srcCompat="@drawable/ic_map_black_24dp" />
 
         <TextView
             android:id="@+id/post_title"
+            android:textStyle="bold"
             android:layout_width="match_parent"
-            android:layout_height="44dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp"
             android:text="lol" />
 
         <TextView
             android:id="@+id/post_text"
             android:layout_width="match_parent"
-            android:layout_height="46dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp"
             android:text="lol" />
 
     </LinearLayout>
