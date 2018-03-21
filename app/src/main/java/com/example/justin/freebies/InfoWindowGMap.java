@@ -3,7 +3,6 @@ package com.example.justin.freebies;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.BitmapFactory;
-import android.os.Handler;
 import android.util.Base64;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,8 +18,6 @@ import java.util.List;
 
 public class InfoWindowGMap implements GoogleMap.InfoWindowAdapter {
 
-    private String std_image = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1000px-No_image_available.svg.png";
-    private boolean first_call = false;
     private List<Marker> markerCheck = new ArrayList<Marker>();
     private Context context;
 
@@ -64,10 +61,6 @@ public class InfoWindowGMap implements GoogleMap.InfoWindowAdapter {
             else if (infoWindowData.getImage() != null && !infoWindowData.getImage().isEmpty()) {
                 byte[] decodedByteArray = android.util.Base64.decode(infoWindowData.getImage(), Base64.DEFAULT);
                 img.setImageBitmap(BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length));
-            }
-            else {
-                //markerCheck.add(marker);
-                //Picasso.get().load(std_image).resize(300, 400).centerCrop().into(img, new InfoWindowRefresher(marker));
             }
         }
 

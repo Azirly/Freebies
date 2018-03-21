@@ -438,10 +438,7 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
             @Override
             public void onCancelled(DatabaseError databaseError) {}
         });
-
     }
-
-
 }
 
 
