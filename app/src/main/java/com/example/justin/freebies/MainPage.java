@@ -10,8 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.algolia.instantsearch.helpers.InstantSearch;
-import com.algolia.instantsearch.helpers.Searcher;
 import com.algolia.search.saas.Client;
 import com.algolia.search.saas.Index;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -34,12 +32,6 @@ public class MainPage extends AppCompatActivity {
     DatabaseReference myRef = database.getReference()
                                     .child("users");
     private static final String TAG = "MainActivity";
-
-
-    private static final String ALGOLIA_APP_ID = "latency";
-    private static final String ALGOLIA_SEARCH_API_KEY = "3d9875e51fbd20c7754e65422f7ce5e1";
-    private static final String ALGOLIA_INDEX_NAME = "bestbuy";
-    private Searcher searcher;
 
     public MainPage() {
         // Read from the database
@@ -113,15 +105,6 @@ public class MainPage extends AppCompatActivity {
         Menu menu = navigation.getMenu();
         MenuItem menuItem = menu.getItem(0);
         menuItem.setChecked(true);
-
-        searcher = Searcher.create(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, ALGOLIA_INDEX_NAME);
-        InstantSearch helper = new InstantSearch(this, searcher);
-        helper.search();
     }
 
-    @Override
-    protected void onDestroy() {
-        searcher.destroy();
-        super.onDestroy();
-    }
 }
