@@ -9,16 +9,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/name"
+            android:textStyle="bold"
+            android:textSize="14sp"
             algolia:attribute='@{"name"}'/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/street"
-            algolia:attribute='@{"place"}'/>
+            android:textSize="14sp"
+            algolia:attribute='@{"place.name"}'/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/description"
+            android:textSize="12sp"
+            android:maxLines="10"
             algolia:attribute='@{"description"}'/>
 
     </LinearLayout>
