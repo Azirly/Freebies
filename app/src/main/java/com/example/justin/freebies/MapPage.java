@@ -342,7 +342,6 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
         for(Marker m: eventMarkers){
             m.setVisible(true);
         }
-
     }
 
     public void showBlogs() {
