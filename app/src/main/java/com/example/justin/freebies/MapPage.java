@@ -3,6 +3,8 @@ package com.example.justin.freebies;
 import java.util.*;
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.Point;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.content.Intent;
@@ -27,6 +29,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -313,7 +316,13 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
         if (simpleSwitch.isChecked()){
             for(Marker marker:eventMarkers){
                 if(marker.getTitle().toLowerCase().contains(find.toLowerCase())){
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(),DEFAULT_ZOOM));
+                    Projection projection = mMap.getProjection();
+                    LatLng markerPosition = marker.getPosition();
+                    Point markerPoint = projection.toScreenLocation(markerPosition);
+                    Point targetPoint = new Point(markerPoint.x, markerPoint.y - Resources.getSystem().getDisplayMetrics().heightPixels/3);
+                    LatLng targetPosition = projection.fromScreenLocation(targetPoint);
+                    mMap.animateCamera(CameraUpdateFactory.newLatLng(targetPosition), 1000, null);
+                   // mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(),DEFAULT_ZOOM));
                     marker.showInfoWindow();
                 }
             }
@@ -321,7 +330,13 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
         else{
             for(Marker marker: blogMarkers){
                 if(marker.getTitle().toLowerCase().contains(find.toLowerCase())){
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(),DEFAULT_ZOOM));
+                    Projection projection = mMap.getProjection();
+                    LatLng markerPosition = marker.getPosition();
+                    Point markerPoint = projection.toScreenLocation(markerPosition);
+                    Point targetPoint = new Point(markerPoint.x, markerPoint.y -  Resources.getSystem().getDisplayMetrics().heightPixels/3);
+                    LatLng targetPosition = projection.fromScreenLocation(targetPoint);
+                    mMap.animateCamera(CameraUpdateFactory.newLatLng(targetPosition), 1000, null);
+                    //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(),DEFAULT_ZOOM));
                     marker.showInfoWindow();
                 }
             }
