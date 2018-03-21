@@ -16,30 +16,15 @@
         android:id="@+id/search_box"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+
     <com.algolia.instantsearch.ui.views.Hits
         android:id="@+id/algohits"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        algolia:itemLayout="@layout/hits_item"/>
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        algolia:itemLayout="@layout/hits_item" />
 </LinearLayout>
-
-    <!--
-    <ScrollView
-        android:id="@+id/scrollView2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <android.support.constraint.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-        </android.support.constraint.ConstraintLayout>
-    </ScrollView>
-    -->
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"
