@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.app.ActivityCompat;
@@ -61,6 +62,7 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
     private ImageView mGps;
     private Switch simpleSwitch;
     private TextView switchText;
+    private SearchView searchBar;
 
     //vars
     private Boolean mLocationPermissionsGranted = false;
@@ -155,7 +157,18 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
                 getDeviceLocation();
             }
         });
+        searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                basicSearch(query);
+                return false;
+            }
 
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
 
         //moveCamera(sydney,DEFAULT_ZOOM);
     }
@@ -170,6 +183,8 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
         simpleSwitch = (Switch) findViewById(R.id.simpleSwitch);
         switchText = (TextView) findViewById(R.id.switchText);
         switchText.setText("Blogs");
+        searchBar = (SearchView) findViewById(R.id.input_search);
+
         fireBaseSetup();
         fireBaseSetupEvent();
         getLocationPermission();
