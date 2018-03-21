@@ -171,6 +171,7 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
         switchText = (TextView) findViewById(R.id.switchText);
         switchText.setText("Blogs");
         fireBaseSetup();
+        fireBaseSetupEvent();
         getLocationPermission();
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
@@ -293,6 +294,24 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
         return;
     }
 
+    public void basicSearch(String find){
+        if (simpleSwitch.isChecked()){
+            for(Marker marker:eventMarkers){
+                if(marker.getTitle().toLowerCase().contains(find.toLowerCase())){
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(),DEFAULT_ZOOM));
+                    marker.showInfoWindow();
+                }
+            }
+        }
+        else{
+            for(Marker marker: blogMarkers){
+                if(marker.getTitle().toLowerCase().contains(find.toLowerCase())){
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(),DEFAULT_ZOOM));
+                    marker.showInfoWindow();
+                }
+            }
+        }
+    }
 
     public void hideEvents(){
         for (Marker marker : eventMarkers){
@@ -377,8 +396,52 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
             @Override
             public void onCancelled(DatabaseError databaseError) {}
         });
+    }
+
+    public void fireBaseSetupEvent(){
+        eventInfoData.clear();
+
+        FirebaseDatabase.getInstance().getReference().child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    for (int i = 0; i < 25; i++) {
+
+                        InfoWindowData info = new InfoWindowData();
+
+                        if(snapshot.hasChild(Integer.toString(i))){
+                            if(snapshot.child(Integer.toString(i)).child("place").hasChild("location")){
+                                if(snapshot.child(Integer.toString(i)).child("place").child("location").hasChild("latitude")){
+                                    if(snapshot.child(Integer.toString(i)).child("place").child("location").hasChild("longitude")) {
+                                        info.setTitle(snapshot.child(Integer.toString(i)).child("name").getValue().toString());
+                                        info.setDescription(snapshot.child(Integer.toString(i)).child("description").getValue().toString());
+                                        info.setLatLng(new LatLng(Double.parseDouble(snapshot.child(Integer.toString(i)).child("place").child("location").child("latitude").getValue().toString()),
+                                                Double.parseDouble(snapshot.child(Integer.toString(i)).child("place").child("location").child("longitude").getValue().toString())));
+                                        if(snapshot.child(Integer.toString(i)).child("place").child("location").hasChild("street") &&
+                                                snapshot.child(Integer.toString(i)).child("place").child("location").hasChild("city") &&
+                                                snapshot.child(Integer.toString(i)).child("place").child("location").hasChild("state") &&
+                                                snapshot.child(Integer.toString(i)).child("place").child("location").hasChild("zip")){
+                                            info.setLocation(snapshot.child(Integer.toString(i)).child("place").child("location").child("street").getValue().toString() + " " +
+                                                    snapshot.child(Integer.toString(i)).child("place").child("location").child("city").getValue().toString() + " " +
+                                                    snapshot.child(Integer.toString(i)).child("place").child("location").child("state").getValue().toString() + " " +
+                                                    snapshot.child(Integer.toString(i)).child("place").child("location").child("zip").getValue().toString());
+                                        }
+                                        eventInfoData.add(info);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
 
     }
+
+
 }
 
 

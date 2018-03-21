@@ -19,6 +19,7 @@ import java.util.List;
 
 public class InfoWindowGMap implements GoogleMap.InfoWindowAdapter {
 
+    private String std_image = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1000px-No_image_available.svg.png";
     private boolean first_call = false;
     private List<Marker> markerCheck = new ArrayList<Marker>();
     private Context context;
@@ -47,24 +48,41 @@ public class InfoWindowGMap implements GoogleMap.InfoWindowAdapter {
 
         InfoWindowData infoWindowData = (InfoWindowData) marker.getTag();
 
-        if (infoWindowData.getImage().contains("http")) {
-            if(markerCheck.contains(marker)){
-                Picasso.get().load(infoWindowData.getImage()).resize(300, 400).centerCrop().into(img);
-            }
-            else{
-                markerCheck.add(marker);
-                Picasso.get().load(infoWindowData.getImage()).resize(300, 400).centerCrop().into(img, new InfoWindowRefresher(marker));
-            }
-        }
-        else if (infoWindowData.getImage() != null && !infoWindowData.getImage().isEmpty()) {
-            byte[] decodedByteArray = android.util.Base64.decode(infoWindowData.getImage(), Base64.DEFAULT);
-            img.setImageBitmap(BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length));
+        if(infoWindowData.getImage() == ""){
+            img.setVisibility(View.INVISIBLE);
         }
         else {
+            if (infoWindowData.getImage().contains("http")) {
+                if(markerCheck.contains(marker)){
+                    Picasso.get().load(infoWindowData.getImage()).resize(300, 400).centerCrop().into(img);
+                }
+                else{
+                    markerCheck.add(marker);
+                    Picasso.get().load(infoWindowData.getImage()).resize(300, 400).centerCrop().into(img, new InfoWindowRefresher(marker));
+                }
+            }
+            else if (infoWindowData.getImage() != null && !infoWindowData.getImage().isEmpty()) {
+                byte[] decodedByteArray = android.util.Base64.decode(infoWindowData.getImage(), Base64.DEFAULT);
+                img.setImageBitmap(BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length));
+            }
+            else {
+                //markerCheck.add(marker);
+                //Picasso.get().load(std_image).resize(300, 400).centerCrop().into(img, new InfoWindowRefresher(marker));
+            }
         }
 
-        date_tv.setText(infoWindowData.getDate());
-        location_tv.setText(infoWindowData.getLocation());
+        if(infoWindowData.getDate().length() > 0){
+            date_tv.setText(infoWindowData.getDate());
+        }
+        else{
+            date_tv.setVisibility(View.INVISIBLE);
+        }
+        if(infoWindowData.getLocation().length() > 0){
+            location_tv.setText(infoWindowData.getLocation());
+        }
+        else{
+            location_tv.setVisibility(View.INVISIBLE);
+        }
 
         return view;
     }

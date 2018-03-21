@@ -4,11 +4,11 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class InfoWindowData {
 
-    private String image;
-    private String title;
-    private String description;
-    private String date;
-    private String location;
+    private String image = "";
+    private String title = "";
+    private String description = "";
+    private String date = "";
+    private String location = "";
     private LatLng latLng;
 
 
