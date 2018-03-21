@@ -64,7 +64,7 @@ public class MainPage extends AppCompatActivity {
 
     private static final String ALGOLIA_APP_ID = "VDDFPCSHAG";
     private static final String ALGOLIA_SEARCH_API_KEY = "943976b36913fdfc82b3262789cc6262";
-    private static final String ALGOLIA_INDEX_NAME = "your_index_name";
+    private static final String ALGOLIA_INDEX_NAME = "New Users";
 
     private Searcher searcher;
 
