@@ -37,7 +37,7 @@ public class AccountPage extends AppCompatActivity implements View.OnClickListen
                     break;
 
                 case R.id.navigation_events:
-                    Intent intent2 = new Intent(AccountPage.this, EventsPage.class);
+                    Intent intent2 = new Intent(AccountPage.this, EventsBlogPage.class);
                     intent2.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(intent2);
                     overridePendingTransition(0,0);

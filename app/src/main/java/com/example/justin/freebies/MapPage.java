@@ -79,7 +79,7 @@ public class MapPage extends AppCompatActivity implements OnMapReadyCallback, On
                     break;
 
                 case R.id.navigation_events:
-                    Intent intent2 = new Intent(MapPage.this, EventsPage.class);
+                    Intent intent2 = new Intent(MapPage.this, EventsBlogPage.class);
                     intent2.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(intent2);
                     overridePendingTransition(0,0);

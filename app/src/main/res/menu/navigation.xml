@@ -8,8 +8,8 @@
 
     <item
         android:id="@+id/navigation_events"
-        android:icon="@drawable/ic_event_note_black_24dp"
-        android:title="@string/Events" />
+        android:icon="@drawable/ic_camera_alt_black_24dp"
+        android:title="Blog" />
 
     <item
         android:id="@+id/navigation_map"

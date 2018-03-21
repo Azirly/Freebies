@@ -34,9 +34,6 @@
             tools:layout_editor_absoluteX="34dp"
             tools:layout_editor_absoluteY="34dp" />
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/buttonSignOut"

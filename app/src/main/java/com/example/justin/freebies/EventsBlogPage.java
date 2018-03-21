@@ -42,7 +42,7 @@ public class EventsBlogPage extends AppCompatActivity {
                     break;
 
                 case R.id.navigation_events:
-                    Intent intent1 = new Intent(EventsBlogPage.this, EventsPage.class);
+                    Intent intent1 = new Intent(EventsBlogPage.this, EventsBlogPage.class);
                     intent1.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(intent1);
                     overridePendingTransition(0,0);

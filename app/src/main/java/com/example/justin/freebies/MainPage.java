@@ -71,7 +71,7 @@ public class MainPage extends AppCompatActivity {
                     break;
 
                 case R.id.navigation_events:
-                    Intent intent = new Intent(MainPage.this, EventsPage.class);
+                    Intent intent = new Intent(MainPage.this, EventsBlogPage.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(intent);
                     overridePendingTransition(0,0);

@@ -8,12 +8,12 @@
     android:layout_height="match_parent"
     tools:context="com.example.justin.freebies.MainPage">
 
-    <com.algolia.instantsearch.ui.views.Hits
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-        <!--
-        algolia:itemLayout="@layout/hits_item"/>
-        -->
+    <!--
+<com.algolia.instantsearch.ui.views.Hits
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"/>
+    algolia:itemLayout="@layout/hits_item"/>
+    -->
 <ScrollView
     android:id="@+id/scrollView2"
     android:layout_width="0dp"
